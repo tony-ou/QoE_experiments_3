@@ -34,19 +34,16 @@ EXISTS=0
 
 if [[ -f "$FILE_CHECK1" ]]; then
     echo "$FILE_CHECK1 already exists."
-    EXISTS=1
 fi
 if [[ -f "$FILE_CHECK2" ]]; then
     echo "$FILE_CHECK2 already exists."
-    EXISTS=1
 fi
 if [[ -f "$FILE_CHECK3" ]]; then
     echo "$FILE_CHECK3 already exists."
-    EXISTS=1
 fi
 
 if [[ $EXISTS == 0 ]]; then
-    python plot_results.py $RES_NAME
+    python3 plot_results.py $RES_NAME
     if [[ -f "$FILE_1" ]]; then
         mv $FILE_1 ../fig/
         echo "$FILE_CHECK1 created successfully"
