@@ -2,15 +2,47 @@
 <html>
 
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/static/css/bootstrap.css">
-    <script src="/static/js/bootstrap.js"></script>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/timeme.min.js"></script>
+    <script type="text/javascript">
+    // Initialize library and start tracking time
+	    TimeMe.initialize({
+		currentPageName: "my-home-page", // current page
+		idleTimeoutInSeconds: 30 // seconds
+	    });
+
+	    // ... Some time later ...
+
+	    // Retrieve time spent on current page
+	  window.onload = function(){
+    TimeMe.trackTimeOnElement('area-of-interest-1');
+    TimeMe.trackTimeOnElement('area-of-interest-2');
+    setInterval(function(){
+      var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+      document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
+
+      var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
+      document.getElementById('area-of-interest-time-1').textContent = timeSpentOnElement.toFixed(2);
+
+      var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
+      document.getElementById('area-of-interest-time-2').textContent = timeSpentOnElement.toFixed(2);
+    }, 25);
+  }    
+
+	</script>
+
+
+
 </head>
 
 <body>
+
     {% block main %} {% endblock %}
 </body>
 

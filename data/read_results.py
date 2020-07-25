@@ -23,10 +23,10 @@ def get_results(path, vid):
             user_list = []
             for numbers in (lines[:4]):
                 nums = re.split(r'[,\n]', numbers)[:-1]
-                nums_arr = np.zeros(count, dtype=int)
+                nums_arr = np.zeros(count, dtype=float)
                 for i in range(count):
                     if nums[i] != '':
-                        nums_arr[i] = int(nums[i])
+                        nums_arr[i] = float(nums[i])
                 user_list.append(nums_arr)
             for rest in (lines[4:]):
                 if rest[-1] == '\n':
@@ -35,4 +35,5 @@ def get_results(path, vid):
                     user_list.append(rest)
             ret.append(user_list)
     return ret
+
 

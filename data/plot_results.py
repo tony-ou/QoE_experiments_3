@@ -84,6 +84,7 @@ rej_res = rr.get_results(rej_path, inp)
 # function to sort results into corresponding lists
 def sort_results(res, grade_list, order_list, vid_time_list, grade_time_list, user_reason_list, device_arr, age_arr, network_arr):
     for user in res:
+        
         grade_list.append(user[0])
         order_list.append(user[1])
         vid_time_list.append(user[2])

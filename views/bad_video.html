@@ -77,6 +77,13 @@ req.onerror = function() {
 }
 
 req.send();
+function checkform(){
+     var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds().toString();
+     $('#next_page').append("<input type='hidden' name='active_time' value='"+
+                         timeSpentOnPage+"' />");
+     return true;
+    }
+
 </script>
 
   {% endblock %}

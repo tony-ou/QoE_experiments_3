@@ -31,7 +31,8 @@
        <script src="/static/js/bootstrap.js"></script>
 
 </head>
-
+{% extends "base.html" %} {% block main %}
+<meta content="width=device-width,initial-scale=1" name="viewport" />
 <body>
 
       <div class="panel-body", style="text-align:center" >
@@ -46,14 +47,14 @@
 
   <div id="form_container">
       <form action="grade" method="POST" style="text-align:center" id="next_page">
-          <button type="submit" class="btn btn-primary" >Go to Grading</button>
+          <button type="submit" class="btn btn-primary" onclick="return checkform()">Go to Grading</button>
       </form>
   </div>
 <br>
 
   <div id="form_container">
-      <form action="reference" method="POST" style="text-align:center" id="next_page">
-          <button type="submit" class="btn btn-primary" >See reference videos again</button>
+      <form action="reference" method="POST" style="text-align:center" id="next_page2">
+          <button type="submit" class="btn btn-primary" onclick="return checkform2()">See reference videos again</button>
       </form>
   </div>
 
@@ -115,10 +116,23 @@ req.onerror = function() {
 }
 
 req.send();
+function checkform(){
+     var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds().toString();
+     $('#next_page').append("<input type='hidden' name='active_time' value='"+
+                         timeSpentOnPage+"' />");
+     return true;
+    }
 
+function checkform2(){
+     var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds().toString();
+     $('#next_page2').append("<input type='hidden' name='active_time' value='"+
+                         timeSpentOnPage+"' />");
+     return true;
+    }
 </script>
 
 </html>
 
 
+  {% endblock %}
 
