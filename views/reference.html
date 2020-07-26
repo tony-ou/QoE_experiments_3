@@ -61,7 +61,7 @@
 
   <div id="form_container">
       <form action="back2video2" method="POST" style="text-align:center" id="next_page">
-          <button type="submit" class="btn btn-primary" >Go Back to Test videos</button>
+          <button type="submit" class="btn btn-primary" onclick="return checkform()">Go Back to Test videos</button>
       </form>
   </div>
 
@@ -69,6 +69,7 @@
 </body>
 
 <script>
+
   function createCORSRequest(method, url) {
   var xhr = new XMLHttpRequest();
   if ("withCredentials" in xhr) {
@@ -132,7 +133,11 @@ req.onload = function() {
 
 
 req.send();
+function checkform(){
 
+     $('#next_page').append("<input type='hidden' name='refer' value='"+
+                         1+"' />");
+}
 </script>
 
 </html>

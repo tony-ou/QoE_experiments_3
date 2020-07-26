@@ -21,6 +21,8 @@ var post_example = async (ctx, next) => {
 }
 
 var post_start = async (ctx, next) => {
+    var active_time = parseFloat(ctx.request.body.active_time);
+    var browserName = ctx.request.body.browser;
        var mturkID = ctx.request.body.MTurkID;
     var device = ctx.request.body.device;
     var age = ctx.request.body.age;
@@ -30,39 +32,8 @@ var post_start = async (ctx, next) => {
     console.log(mturkID, device, age);
     var start = new Date().getTime();
    
-	var results = fs.readdirSync('./results2/')
-
-    if (results.indexOf(mturkID+ '.txt') > -1){
-        flag = false;
-        ctx.render('repeat.html', {
-        });
-        return;
-    }
 
 
-    	var results = fs.readdirSync('./old_results/FantasticFinish2013_01_04BoysBasketball_Lakeviewvs_2_500k_360_50_master/results')
-      if (results.indexOf(mturkID+ '.txt') > -1){
-        flag = false;
-        ctx.render('repeat.html', {
-        });
-        return;
-    }
-
-        	var results = fs.readdirSync('../QoE_experiments_3/old_results/FantasticFinish2013_01_04BoysBasketball_Lakeviewvs_2_500k_360_50_master/results')
-      if (results.indexOf(mturkID+ '.txt') > -1){
-        flag = false;
-        ctx.render('repeat.html', {
-        });
-        return;
-    }
-        var results = fs.readdirSync('./results3/')
-
-    if (results.indexOf(mturkID+ '.txt') > -1){
-        flag = false;
-        ctx.render('repeat.html', {
-        });
-        return;
-    }
  
     let user = {
         mturkID : mturkID,
@@ -77,7 +48,14 @@ var post_start = async (ctx, next) => {
         active_video_time: [],
         active_grade_time : [],
         test: [],
-        start : start
+        start : start,
+        instruction: active_time,
+        play: [],
+        pause: [],
+        seek: [],
+        browser: browserName,
+        reference: [],
+        return : []
     };
     for (i = 0; i < num_vids; i++)
     {
@@ -85,7 +63,11 @@ var post_start = async (ctx, next) => {
         user.grade_time.push(0);
         user.active_video_time.push(0);
      	user.active_grade_time.push(0);
-           
+        user.play.push(0);
+        user.pause.push(0);
+        user.seek.push(0);
+        user.return.push(0)
+        user.reference.push(0)
     }
     let value =  Buffer.from(JSON.stringify(user)).toString('base64');
     ctx.cookies.set('name', value);
@@ -96,12 +78,19 @@ var post_start = async (ctx, next) => {
 var post_grade= async (ctx, next) => {
 
 	var active_time = parseFloat(ctx.request.body.active_time);
+    var play = parseFloat(ctx.request.body.play);
+    var pause = parseFloat(ctx.request.body.pause);
+    var seek = parseFloat(ctx.request.body.seek);
     console.log(active_time)
     var user = ctx.state.user;
     var end = new Date().getTime();
     var exe_time = end - user.start;
     user.video_time[user.count-1] += exe_time;
     user.active_video_time[user.count-1] += active_time;
+    user.play[user.count-1] += play;
+    user.pause[user.count-1] += pause;
+    user.seek[user.count-1] += seek;
+    
     console.log(user.active_video_time)
     
     user.start = end;
@@ -157,11 +146,13 @@ var post_reference = async (ctx, next) => {
 
 var post_back2video = async (ctx, next) => {
     var user = ctx.state.user;
+    console.log('fuckkkkkk')
     var video_src = video_url + user.video_order[user.count - 1] + ".mp4";
     var active_time = parseFloat(ctx.request.body.active_time);
     var end = new Date().getTime();
     var exe_time = end - user.start;
     user.grade_time[user.count-1] += exe_time;
+    user.return[user.count-1] += 1;
     if (!isNaN(active_time))
     {
         user.active_grade_time[user.count-1] += active_time;
@@ -193,7 +184,12 @@ var post_back2video = async (ctx, next) => {
 var post_back2video2 = async (ctx, next) => {
     var user = ctx.state.user;
     var video_src = video_url + user.video_order[user.count - 1] + ".mp4";
+    var refer =parseFloat(ctx.request.body.refer);
+    var user = ctx.state.user;
+    user.reference[user.count-1] += 1
+    let value =  Buffer.from(JSON.stringify(user)).toString('base64');
     
+    ctx.cookies.set('name', value);
     var title = user.count + "/" + num_vids;
     if (user.video_order[user.count - 1] == 1){
         ctx.render('video.html', {
@@ -279,6 +275,11 @@ var post_end = async (ctx, next) => {
     var write_test = [];
     var write_video_time = [], write_grade_time =[];
     var write_active_video_time = [], write_active_grade_time = []
+    var write_play = [], write_seek = []
+    var write_reference = [], write_pause = []
+    var write_return = []
+        console.log(user.play)
+        console.log(user.reference)
     for(var i in user.video_order) {
         write_data[user.video_order[i] - 1] = user.result[i];
         write_test[user.video_order[i] - 1] = user.test[i];
@@ -287,12 +288,21 @@ var post_end = async (ctx, next) => {
 		write_active_video_time[user.video_order[i] - 1] = user.active_video_time[i];
         write_active_grade_time[user.video_order[i] - 1] = user.active_grade_time[i];
 
+        write_play[user.video_order[i] - 1] = user.play[i];
+        write_pause[user.video_order[i] - 1] = user.pause[i];
+        write_seek[user.video_order[i] - 1] = user.seek[i];
+        write_reference[user.video_order[i] -1 ]= user.reference[i];
+write_return[user.video_order[i] -1 ]= user.return[i];
+        if (i == user.video_order[2])
+            write_return[user.video_order[i] -1 ]-=1
     }
     fs.writeFile(filename, write_data + '\n'+ user.video_order + '\n' + 
                 write_video_time + '\n' + write_active_video_time + '\n'
                  + write_grade_time + '\n' + write_active_grade_time + '\n' + user.mturkID + '\n' 
                  + user.device + '\n' + user.age + '\n' 
-                 + user.network + '\n' + user.reason +'\n'+  write_test, function(err) {
+                 + user.network + '\n' + user.reason +'\n'+ user.browser + '\n' + user.instruction + '\n'+
+                 write_play + '\n' + write_pause + '\n' + write_seek + '\n' + write_reference + '\n' + write_return + '\n'
+                 + write_test, function(err) {
         if(err) {
             return console.log(err);
         }

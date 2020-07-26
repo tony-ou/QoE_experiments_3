@@ -87,7 +87,34 @@ function checkform(){
      var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds().toString();
      $('#next_page').append("<input type='hidden' name='active_time' value='"+
                          timeSpentOnPage+"' />");
+          $('#next_page').append("<input type='hidden' name='play' value='"+
+                         play+"' />");
+     $('#next_page').append("<input type='hidden' name='pause' value='"+
+                         pause+"' />");
+     $('#next_page').append("<input type='hidden' name='seek' value='"+
+                         seek+"' />");
+
      return true;
+    }
+
+var seek = 0;
+var play = 0
+var pause = 0
+
+
+document.getElementById('myVideo').addEventListener('play',myHandler2,false);
+    function myHandler2(e) {
+        play = play + 1
+    }
+
+document.getElementById('myVideo').addEventListener('seeking',myHandler3,false);
+    function myHandler3(e) {
+        seek = seek + 1
+    }
+
+document.getElementById('myVideo').addEventListener('pause',myHandler4,false);
+    function myHandler4(e) {
+        pause = pause + 1
     }
 
 
