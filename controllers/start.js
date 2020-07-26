@@ -55,7 +55,8 @@ var post_start = async (ctx, next) => {
         seek: [],
         browser: browserName,
         reference: [],
-        return : []
+        return : [],
+        training : 0
     };
     for (i = 0; i < num_vids; i++)
     {
@@ -106,9 +107,13 @@ var post_grade= async (ctx, next) => {
 
 var post_first = async (ctx, next) => {
     var video_src = video_url + "1.mp4";
+    var user = ctx.state.user;
+    var active_time = parseFloat(ctx.request.body.active_time);
+    user.training = active_time
     // https://github.com/michaelliao/learn-javascript/raw/master/video/vscode-nodejs.mp4
     // very interesting url!
-
+    let value =  Buffer.from(JSON.stringify(user)).toString('base64');
+    ctx.cookies.set('name', value);
     var title = "1/" + num_vids;
     ctx.render('video.html', {
         title: title, video_src : video_src
@@ -293,14 +298,14 @@ var post_end = async (ctx, next) => {
         write_seek[user.video_order[i] - 1] = user.seek[i];
         write_reference[user.video_order[i] -1 ]= user.reference[i];
 write_return[user.video_order[i] -1 ]= user.return[i];
-        if (i == user.video_order[2])
+        if (i == 2)
             write_return[user.video_order[i] -1 ]-=1
     }
     fs.writeFile(filename, write_data + '\n'+ user.video_order + '\n' + 
                 write_video_time + '\n' + write_active_video_time + '\n'
                  + write_grade_time + '\n' + write_active_grade_time + '\n' + user.mturkID + '\n' 
                  + user.device + '\n' + user.age + '\n' 
-                 + user.network + '\n' + user.reason +'\n'+ user.browser + '\n' + user.instruction + '\n'+
+                 + user.network + '\n' + user.reason +'\n'+ user.browser + '\n' + user.instruction + '\n'+ user.training + '\n' +
                  write_play + '\n' + write_pause + '\n' + write_seek + '\n' + write_reference + '\n' + write_return + '\n'
                  + write_test, function(err) {
         if(err) {

@@ -29,7 +29,7 @@
       <video width="1024" height="576" controls="controls" id="stall" >
       </video>
   </div>
-    <form action="first", method="POST"  style="text-align:center">
+    <form action="first", method="POST"  style="text-align:center" id='next_page'>
   <button type="submit" class="btn btn-primary" onclick="return checkform()">Start test</button>
   </form>
 </div>
@@ -98,6 +98,14 @@ req.onload = function() {
 
 req.send();
 
+function checkform(){
+     var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds().toString();
+     $('#next_page').append("<input type='hidden' name='active_time' value='"+
+                         timeSpentOnPage+"' />");
+
+
+     return true;
+    }
 </script>
 
   {% endblock %}
