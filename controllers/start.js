@@ -151,7 +151,6 @@ var post_reference = async (ctx, next) => {
 
 var post_back2video = async (ctx, next) => {
     var user = ctx.state.user;
-    console.log('fuckkkkkk')
     var video_src = video_url + user.video_order[user.count - 1] + ".mp4";
     var active_time = parseFloat(ctx.request.body.active_time);
     var end = new Date().getTime();
